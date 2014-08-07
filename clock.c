@@ -10,6 +10,11 @@
 int initial_wait(void);
 int hourly_wait(int current_hour);
 void ring_bell(int fd, int hour);
+int custom_wait(int current_hour, int divisor, int ard_fd);
+
+enum OP_MODES { OP_HOURLY, OP_HALF_HOURLY, OP_QUARTER_HOURLY };
+
+#define OP_MODE OP_QUARTER_HOURLY
 
 int main(int argc, char **argv)
 {
@@ -22,7 +27,12 @@ int main(int argc, char **argv)
 	ring_bell(ard_fd, current_hour);
 	
 	while(1) {
-		current_hour = hourly_wait(current_hour);
+		if( OP_MODE == OP_HALF_HOURLY )
+			current_hour = custom_wait(current_hour, 2, ard_fd);
+		else if( OP_MODE == OP_QUARTER_HOURLY )
+			current_hour = custom_wait(current_hour, 4, ard_fd);
+		else
+			current_hour = hourly_wait(current_hour);
 		ring_bell(ard_fd, current_hour);
 	}	
 	
@@ -63,6 +73,22 @@ int hourly_wait(int current_hour)
 {
 	printf("Hourly wait: need to sleep for %d secs (%d minutes)\n", HOUR_SLEEP, HOUR_SLEEP / 60);
 	sleep(HOUR_SLEEP);
+	if( current_hour == 23 )
+		return 0;
+	else
+		return current_hour + 1;
+}
+
+int custom_wait(int current_hour, int divisor, int ard_fd)
+{
+	int wait_time = HOUR_SLEEP / divisor;
+	printf("Custom wait: need to sleep for %d secs (%d minutes)\n", wait_time, wait_time / 60);
+	
+	int i;
+	for(i=0; i<(divisor - 1); i++) {
+		sleep(wait_time);
+		ring_bell(ard_fd, 1);
+	}
 	if( current_hour == 23 )
 		return 0;
 	else
