@@ -82,10 +82,10 @@ int hourly_wait(int current_hour)
 int custom_wait(int current_hour, int divisor, int ard_fd)
 {
 	int wait_time = HOUR_SLEEP / divisor;
-	printf("Custom wait: need to sleep for %d secs (%d minutes)\n", wait_time, wait_time / 60);
 	
 	int i;
 	for(i=0; i<(divisor - 1); i++) {
+		printf("Custom wait (cycle %d): need to sleep for %d secs (%d minutes)\n", i, wait_time, wait_time / 60);
 		sleep(wait_time);
 		ring_bell(ard_fd, 1);
 	}
@@ -97,7 +97,7 @@ int custom_wait(int current_hour, int divisor, int ard_fd)
 
 void ring_bell(int ard_fd, int hour)
 {
-	int i, dings;
+	int dings;
 	if( hour == 0 )
 		dings = 12;
 	else if( hour > 12 )
