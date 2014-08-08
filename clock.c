@@ -27,12 +27,15 @@ int main(int argc, char **argv)
 	ring_bell(ard_fd, current_hour);
 	
 	while(1) {
-		if( OP_MODE == OP_HALF_HOURLY )
+		if( OP_MODE == OP_HALF_HOURLY ) {
 			current_hour = custom_wait(current_hour, 2, ard_fd);
-		else if( OP_MODE == OP_QUARTER_HOURLY )
+		}
+		else if( OP_MODE == OP_QUARTER_HOURLY ) {
 			current_hour = custom_wait(current_hour, 4, ard_fd);
-		else
+		}
+		else {
 			current_hour = hourly_wait(current_hour);
+		}
 		ring_bell(ard_fd, current_hour);
 	}	
 	
@@ -73,10 +76,12 @@ int hourly_wait(int current_hour)
 {
 	printf("Hourly wait: need to sleep for %d secs (%d minutes)\n", HOUR_SLEEP, HOUR_SLEEP / 60);
 	sleep(HOUR_SLEEP);
-	if( current_hour == 23 )
+	if( current_hour == 23 ) {
 		return 0;
-	else
+	}
+	else {
 		return current_hour + 1;
+	}
 }
 
 int custom_wait(int current_hour, int divisor, int ard_fd)
@@ -89,10 +94,13 @@ int custom_wait(int current_hour, int divisor, int ard_fd)
 		sleep(wait_time);
 		ring_bell(ard_fd, 1);
 	}
-	if( current_hour == 23 )
+	sleep(wait_time);
+	if( current_hour == 23 ) {
 		return 0;
-	else
+	}
+	else {
 		return current_hour + 1;
+	}
 }
 
 void ring_bell(int ard_fd, int hour)
