@@ -15,7 +15,7 @@ config.o: config.c
 clean:
 	rm -rf *.o clock
 
-install:
+install: clock
 	-mkdir /opt
 	mkdir $(INSTALLDIR)
 	mkdir $(INSTALLDIR)/src
