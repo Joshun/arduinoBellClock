@@ -23,6 +23,7 @@ install:
 	cp clock_wrapper.sh $(INSTALLDIR)
 	cp clock.cfg $(INSTALLDIR)
 	cp *.c *.h $(INSTALLDIR)/src
+	cp -r arduino $(INSTALLDIR)/src
 	ln -s $(INSTALLDIR)/clock_wrapper.sh /usr/bin/arduinoBellClock
 	ln -s $(INSTALLDIR)/clock.cfg /etc/arduinoBellClock.cfg
 	ln -s $(INSTALLDIR)/clock.log /var/log/arduinoBellClock.log
