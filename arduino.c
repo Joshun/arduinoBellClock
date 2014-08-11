@@ -5,6 +5,8 @@
 #include <termios.h>
 #include <fcntl.h>
 
+#include "log.h"
+
 #define DEVICE_PATH "/dev/ttyACM0"
 #define DEVICE_BAUD B9600
 #define END_CHAR '\n'
@@ -14,6 +16,7 @@ void send_ring_msg(int arduino_fd, int ntimes)
 	char out_buffer[100];
 	snprintf(out_buffer, sizeof(out_buffer) - 1, "RINGN %d\n", ntimes);
 	write(arduino_fd, out_buffer, strlen(out_buffer));
+	fprintf(log_fp, "Sent data to arduino: %s\n", out_buffer);
 }
 
 int arduino_init(struct termios *old_config, struct termios *new_config)
@@ -24,11 +27,11 @@ int arduino_init(struct termios *old_config, struct termios *new_config)
 
 	if(fd == -1)
 	{
-		printf("Arduino not connected. Exiting...\n");
+		fprintf(log_fp, "Arduino not connected, exiting...\n");
 		exit(EXIT_FAILURE);
 	}
 
-	printf("Arduino fd opened as %i\n", fd);
+	fprintf(log_fp, "Arduino fd opened as %i\n", fd);
 	tcgetattr(fd, old_config);
 	new_config = old_config;
 	cfsetispeed(new_config, DEVICE_BAUD);
