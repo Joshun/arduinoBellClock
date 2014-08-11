@@ -27,7 +27,7 @@ int main(int argc, char **argv)
 	int current_hour = 0;
 	
 	struct termios old_ard_config, new_ard_config;
-	int ard_fd = arduino_init(&old_ard_config, &new_ard_config);
+	int ard_fd = arduino_init(config.arduino_path, &old_ard_config, &new_ard_config);
 	
 	current_hour = initial_wait();
 	ring_bell(ard_fd, current_hour);

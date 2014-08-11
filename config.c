@@ -13,6 +13,7 @@
 
 typedef struct {
 	int op_mode;
+	char arduino_path[100];
 } config_t;
 
 enum OP_MODES { OP_HOURLY, OP_HALF_HOURLY, OP_QUARTER_HOURLY };
@@ -85,6 +86,12 @@ void load_config(const char *cfgfile, config_t *config)
 			else if( COMP_STR(val_buffer, "quarter-hourly") ) config->op_mode = OP_QUARTER_HOURLY;
 			else config->op_mode = OP_HOURLY;
 		}
+		else if( COMP_STR(ref_buffer, "arduino_path") ) {
+			strncpy(config->arduino_path, val_buffer, 99);
+		}
+		
+		memset(ref_buffer, '\0', sizeof(ref_buffer));
+		memset(val_buffer, '\0', sizeof(val_buffer));
 		
 	}
 }

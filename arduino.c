@@ -19,15 +19,15 @@ void send_ring_msg(int arduino_fd, int ntimes)
 	fprintf(log_fp, "Sent data to arduino: %s\n", out_buffer);
 }
 
-int arduino_init(struct termios *old_config, struct termios *new_config)
+int arduino_init(const char *path, struct termios *old_config, struct termios *new_config)
 {
-	int fd = open(DEVICE_PATH, O_RDWR | O_NOCTTY);
+	int fd = open(path, O_RDWR | O_NOCTTY);
 //	int fd = open(DEVICE_PATH, O_RDWR);
 
 
 	if(fd == -1)
 	{
-		fprintf(log_fp, "Arduino not connected, exiting...\n");
+		fprintf(log_fp, "Arduino not connected (could not open %s), exiting...\n", path);
 		exit(EXIT_FAILURE);
 	}
 
