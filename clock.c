@@ -5,6 +5,7 @@
 
 #include "log.h"
 #include "arduino.h"
+#include "config.h"
 
 #define HOUR_SLEEP 60*60
 
@@ -13,16 +14,15 @@ int hourly_wait(int current_hour);
 void ring_bell(int fd, int hour);
 int custom_wait(int current_hour, int divisor, int ard_fd);
 
-enum OP_MODES { OP_HOURLY, OP_HALF_HOURLY, OP_QUARTER_HOURLY };
-
-#define OP_MODE OP_QUARTER_HOURLY
-
 int main(int argc, char **argv)
 {
 	if( !(log_fp = fopen(LOG_FILE, "w")) ) {
 		printf("Error: could not open logfile for writing!\n");
 		exit(EXIT_FAILURE);
 	}
+	
+	config_t config;
+	load_config(CONFIG_FILE, &config);
 	
 	int current_hour = 0;
 	
@@ -33,10 +33,10 @@ int main(int argc, char **argv)
 	ring_bell(ard_fd, current_hour);
 	
 	while(1) {
-		if( OP_MODE == OP_HALF_HOURLY ) {
+		if( config.op_mode == OP_HALF_HOURLY ) {
 			current_hour = custom_wait(current_hour, 2, ard_fd);
 		}
-		else if( OP_MODE == OP_QUARTER_HOURLY ) {
+		else if( config.op_mode == OP_QUARTER_HOURLY ) {
 			current_hour = custom_wait(current_hour, 4, ard_fd);
 		}
 		else {
